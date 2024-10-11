@@ -6,11 +6,13 @@ runs:
     - name: Display toolchain configuration and verify matching arch
       shell: bash
       run: |
+        echo "Runner architecture: ${{runner.arch}}"
         case ${{runner.arch}} in
           X64)   target_arch=x86_64;;
           ARM64) target_arch=aarch64;;
           *)     echo "Unknown arch" && exit 1;;
         esac
+        echo "Target GNAT architecture: $target_arch"
         which gcc
         gcc -v
         gcc -dumpmachine   && gcc -dumpmachine   | grep -q $target_arch || exit 1
