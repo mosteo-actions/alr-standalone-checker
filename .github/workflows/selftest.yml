@@ -31,4 +31,4 @@ jobs:
           - name: Run action
             uses: ./
             with:
-              path: ${{ steps.find-alr.outputs.alr_path }}
+              alr_path: ${{ steps.find-alr.outputs.alr_path }}

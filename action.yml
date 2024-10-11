@@ -3,14 +3,36 @@ description: 'Verify that the installed toolchain matches the machine architectu
 
 # Add input parameter for the path to alr
 inputs:
-  path:
+  alr_path:
     description: 'Path to the alr executable (excluding alr itself) in bash format'
     required: true
     default: 'bin'
+  toolchain_path:
+    description: 'Path to the toolchain directory (will be deleted if given!)'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
   steps:
+    - name: Print inputs
+      shell: bash
+      run: |
+        echo "alr_path: ${{ inputs.alr_path }}"
+        echo "toolchain_path: ${{ inputs.toolchain_path }}"
+
+    - name: Delete toolchain
+      if: ${{ inputs.toolchain_path != '' }}
+      shell: bash
+      run: rm -rf ${{ inputs.toolchain_path }}
+
+    - name: Ensure no toolchain is present
+      shell: bash
+      run: |
+        gnat --version || true
+        gcc --version || true
+        gprbuild --version || true
+
     - name: Display `alr` version and dependencies
       shell: bash
       run: |
@@ -21,5 +43,6 @@ runs:
           *)     echo "Unknown arch" && exit 1;;
         esac
         echo "Target alr architecture: $target_arch"
-        ${{ inputs.path }}/alr --version
-        ${{ inputs.path }}/alr version | grep host-arch | grep $target_arch
+        ${{ inputs.alr_path }}/alr --version
+        ${{ inputs.alr_path }}/alr version
+        ${{ inputs.alr_path }}/alr version | grep host-arch | grep $target_arch
