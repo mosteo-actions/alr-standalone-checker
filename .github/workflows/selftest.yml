@@ -21,6 +21,8 @@ jobs:
 
           - name: Set up the latest alr
             uses: alire-project/setup-alire@v3
+            with:
+              msys2: false
 
           # Find alr's location
           - name: Find alr
