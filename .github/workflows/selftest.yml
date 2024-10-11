@@ -18,5 +18,10 @@ jobs:
           - name: Checkout repository
             uses: actions/checkout@v4
 
+          - name: Set up the latest GNAT toolchain
+            uses: alire-project/alr-install@v1
+            with:
+                crates: gnat_native gprbuild
+
           - name: Run action
             uses: ./
