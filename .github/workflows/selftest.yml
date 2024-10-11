@@ -19,10 +19,16 @@ jobs:
           - name: Checkout repository
             uses: actions/checkout@v4
 
-          - name: Set up the latest GNAT toolchain
-            uses: alire-project/alr-install@v1
-            with:
-                crates: gnat_native gprbuild
+          - name: Set up the latest alr
+            uses: alire-project/setup-alire@v3
+
+          # Find alr's location
+          - name: Find alr
+            id: find-alr
+            run: |
+              echo "alr_path=$(dirname $(which alr))" >> $GITHUB_OUTPUT
 
           - name: Run action
             uses: ./
+            with:
+              path: ${{ steps.find-alr.outputs.alr_path }}

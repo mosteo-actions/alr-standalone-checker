@@ -1,19 +1,25 @@
-name: 'GNAT toolchain architecture checker'
+name: 'alr standalone checker'
 description: 'Verify that the installed toolchain matches the machine architecture'
+
+# Add input parameter for the path to alr
+inputs:
+  path:
+    description: 'Path to the alr executable (excluding alr itself) in bash format'
+    required: true
+    default: 'bin'
+
 runs:
   using: 'composite'
   steps:
-    - name: Display toolchain configuration and verify matching arch
+    - name: Display `alr` version and dependencies
       shell: bash
       run: |
         echo "Runner architecture: ${{runner.arch}}"
         case ${{runner.arch}} in
-          X64)   target_arch=x86_64;;
-          ARM64) target_arch=aarch64;;
+          X64)   target_arch=X86_64;;
+          ARM64) target_arch=AARCH64;;
           *)     echo "Unknown arch" && exit 1;;
         esac
-        echo "Target GNAT architecture: $target_arch"
-        which gcc
-        gcc -v
-        gcc -dumpmachine   && gcc -dumpmachine   | grep -q $target_arch || exit 1
-        gprbuild --version && gprbuild --version | grep -q $target_arch || exit 1
+        echo "Target alr architecture: $target_arch"
+        ${{ inputs.path }}/alr --version
+        ${{ inputs.path }}/alr version | grep host-arch | grep $target_arch

@@ -1,2 +1,1 @@
-An action to check that the installed `gcc` and `gprbuild` match the runner
-architecture.
+An action to check that `alr` is able to run in a system with no Ada toolchain.
